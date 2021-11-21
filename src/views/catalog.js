@@ -1,7 +1,7 @@
 import {html, render} from 'https://unpkg.com/lit-html?module';
 
 import {getUserData, showView} from "../dom.js";
-import {getAllIdeas, getIdeaById} from "../api/data.js";
+import {deleteIdeaById, getAllIdeas, getIdeaById} from "../api/data.js";
 
 const detailsView = document.getElementById('details-page');
 detailsView.remove();
@@ -28,7 +28,7 @@ const ideaDetailsTemplate = (onDelete, data) => html`
     </div>
     ${ 
       data._ownerId === getUserData().id() ?
-      html`<div class="text-center"><a @click="${onDelete}" class="btn detb" href="">Delete</a></div>` : 
+      html`<div class="text-center"><a @click="${onDelete}" id="${data._id}" class="btn detb" href="">Delete</a></div>` : 
       html`<div></div>`
     }
 `
@@ -52,14 +52,17 @@ function onDetails(idea, event) {
   showDetails(id);
 }
 
-function onDelete() {
+async function onDelete(event) {
+  event.preventDefault();
 
+  await deleteIdeaById(event.target.id);
+  showDashboard();
 }
 
 async function renderIdea(id) {
   const idea = await getIdeaById(id);
 
-  const result = ideaDetailsTemplate(onDetails.bind(), idea);
+  const result = ideaDetailsTemplate(onDelete.bind(), idea);
   render(result, detailsView);
 }
 

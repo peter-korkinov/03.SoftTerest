@@ -5,13 +5,15 @@ import {logout} from "./api/data.js";
 import {showCreate} from "./views/create.js";
 import {showDashboard} from "./views/catalog.js";
 
+showHome();
+
 document.querySelector('#navbar').addEventListener('click', onNavigate);
 
 const navViews = {
   'nav-logo': showHome,
   'nav-dashboard': showDashboard,
   'nav-create': showCreate,
-  'nav-logout': logout,
+  'nav-logout': onLogout,
   'nav-login': showLogin,
   'nav-register': showRegister
 }
@@ -26,4 +28,7 @@ function onNavigate(event) {
   }
 }
 
-showHome();
+async function onLogout() {
+  await logout();
+  showHome();
+}
